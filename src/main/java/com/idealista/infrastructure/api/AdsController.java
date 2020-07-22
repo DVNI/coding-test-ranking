@@ -2,27 +2,44 @@ package com.idealista.infrastructure.api;
 
 import java.util.List;
 
+import com.idealista.application.service.AdsService;
+import com.idealista.application.service.ScoringService;
+import com.idealista.application.service.impl.AdsServiceImpl;
+import com.idealista.application.service.impl.ScoringServiceImpl;
+import com.idealista.domain.api.PublicAd;
+import com.idealista.domain.api.QualityAd;
+import com.idealista.domain.data.Ad;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@AllArgsConstructor
 public class AdsController {
 
-    //TODO añade url del endpoint
+    private final AdsService adsService;
+
+    private final ScoringService scoringService;
+
+    @GetMapping("/admin/quality/ads")
     public ResponseEntity<List<QualityAd>> qualityListing() {
-        //TODO rellena el cuerpo del método
-        return ResponseEntity.notFound().build();
+        List<QualityAd> qualityAds = adsService.getAdminAds();
+        return qualityAds.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok().body(qualityAds);
+
     }
 
-    //TODO añade url del endpoint
+    @GetMapping("/ads")
     public ResponseEntity<List<PublicAd>> publicListing() {
-        //TODO rellena el cuerpo del método
-        return ResponseEntity.notFound().build();
+        List<PublicAd> publicAds = adsService.getPublicAds();
+        return publicAds.isEmpty() ?
+                ResponseEntity.noContent().build() : ResponseEntity.ok().body(publicAds);
     }
 
-    //TODO añade url del endpoint
+    @PostMapping("/ads/score")
     public ResponseEntity<Void> calculateScore() {
-        //TODO rellena el cuerpo del método
-        return ResponseEntity.notFound().build();
+        scoringService.calculateScores();
+        return ResponseEntity.noContent().build();
     }
 }
